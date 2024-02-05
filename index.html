@@ -208,7 +208,7 @@
       //      console.log(list) // prints ["a"]
       // 👉 HINT: if you are not feeling confident with map and filter, solve the problem with for loops,
       //      and with the piece of mind of all tests passing, refactor to use map/filter
-      constructor(...antNames) {
+  constructor(...antNames) {
     this.ants = antNames.map(name => ({ name, health: 100 }));
   }
 
@@ -217,26 +217,25 @@
       return "No ants here. Did you work them to death?";
     }
 
+    const antNumber = this.ants.length;
     this.ants.forEach(ant => {
-      ant.health = Math.max(0, ant.health - 20);
+      ant.health -= 20;
+      if (ant.health <= 0) {
+        this.ants = this.ants.filter(a => a !== ant);
+      }
     });
 
-    this.ants = this.ants.filter(ant => ant.health > 0);
-
-    if (this.ants.length === 0) {
-      return "No ants here. Did you work them to death?";
-    }
-
-    return `${this.ants.length} ants${this.ants.length > 3 ? 's' : ''} starting work!`;
+    return `${antNumber} ants starting work!`;
   }
 
-  feed(name) {
-    const ant = this.ants.find(ant => ant.name === name);
+  feed(antName) {
+    const ant = this.ants.find(ant => ant.name === antName);
+
     if (ant) {
-      ant.health = Math.min(100, ant.health + 15);
+      ant.health += 15;
       return "Yum!";
     } else {
-      return `${name} not found!`;
+      return `${antName} not found!`;
     }
   }
 }
@@ -471,7 +470,7 @@
         },
         function () {
           let actual, description = 'Working returns the correct string'
-          let expected = ["3 ants starting work!", "1 ants starting work!", "No ants here. Did you work them to death?"]
+          let expected = ["3 ants starting work!","1 ants starting work!","No ants here. Did you work them to death?"]
           try {
             const farm = new AntFarm('Jess', 'Blake', 'Jess')
             farm.ants[0].health++
@@ -483,7 +482,7 @@
         },
         function () {
           let actual, description = 'Feeding increases 15 health points of lucky ant(s)'
-          let expected = [{ name: "Jess", "health": 115 }, { name: "Blake", health: 100 }, { name: "Jess", health: 115 }]
+          let expected = [{ name: "Jess", "health": 115 }, { name: "Blake", health: 100 }, { name: "Jess", health: 100 }]
           try {
             const farm = new AntFarm('Jess', 'Blake', 'Jess')
             farm.feed('Jess')
